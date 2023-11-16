@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 import requests
 import re
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 def list_split(items, n):
@@ -11,13 +11,12 @@ def getdata(name):
     try:
         gitpage = requests.get("https://github.com/" + name)
         data = gitpage.text
-        # 更新的正则表达式
         datadatereg = re.compile(r'data-date="(.*?)"')
         datadate = datadatereg.findall(data)
 
         datacount = []
         for date in datadate:
-            datacountreg = re.compile(rf'data-date="{date}".*?>(\d+) contributions')
+            datacountreg = re.compile(rf'data-date="{date}"[\s\S]*?<tool-tip.*?>(\d+) contributions')
             count = datacountreg.findall(data)
             if count:
                 datacount.append(int(count[0]))
@@ -64,4 +63,10 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f"Server error: {e}".encode('utf-8'))
 
-        return
+# 设置服务器的端口号
+port = 8080
+
+# 创建并启动服务器
+httpd = HTTPServer(('localhost', port), handler)
+print(f"Server running on port {port}...")
+httpd.serve_forever()
