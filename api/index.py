@@ -63,10 +63,10 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f"Server error: {e}".encode('utf-8'))
 
-# 设置服务器的端口号
-port = 8080
+# # 设置服务器的端口号
+# port = 8080
 
-# 创建并启动服务器
-httpd = HTTPServer(('localhost', port), handler)
-print(f"Server running on port {port}...")
-httpd.serve_forever()
+# # 创建并启动服务器
+# httpd = HTTPServer(('localhost', port), handler)
+# print(f"Server running on port {port}...")
+# httpd.serve_forever()
