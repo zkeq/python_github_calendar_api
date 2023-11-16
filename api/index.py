@@ -16,10 +16,17 @@ def getdata(name):
 
         datacount = []
         for date in datadate:
-            datacountreg = re.compile(rf'data-date="{date}"[\s\S]*?<tool-tip.*?>(\d+) contributions')
-            count = datacountreg.findall(data)
-            if count:
-                datacount.append(int(count[0]))
+            # 匹配 'tool-tip' 标签来提取贡献次数
+            datacountreg = re.compile(rf'data-date="{date}"[\s\S]*?<tool-tip.*?>(\d+ contributions|No contributions)')
+            count_match = datacountreg.findall(data)
+            if count_match:
+                # 处理 'No contributions' 的情况
+                if 'No contributions' in count_match[0]:
+                    datacount.append(0)
+                else:
+                    # 提取具体的贡献次数
+                    num_contributions = re.findall(r'(\d+)', count_match[0])
+                    datacount.append(int(num_contributions[0]) if num_contributions else 0)
             else:
                 datacount.append(0)
 
@@ -41,6 +48,8 @@ def getdata(name):
     except Exception as e:
         print(f"Error processing data: {e}")
         return None
+
+
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
