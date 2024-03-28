@@ -13,7 +13,7 @@ def getdata(name):
     try:
         gitpage = requests.get("https://github.com/" + name)
         if gitpage.status_code != 200:
-            print(f"Failed to get data: {gitpage.status_code}")
+            print(f"Failed to get data: {gitpage.status_code} {gitpage.reason} {gitpage.url}")
             return None
 
         data = gitpage.text
