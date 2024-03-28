@@ -61,7 +61,7 @@ class handler(BaseHTTPRequestHandler):
         try:
             path = self.path
             user = path.split('?')[1]
-            data = getdata(user)
+            data = getdata(user[:-1])
             if data:
                 self.send_response(200)
                 self.send_header('Access-Control-Allow-Origin', '*')
@@ -77,7 +77,7 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f"Server error: {e}".encode('utf-8'))
 
-
+#
 # # 设置服务器的端口号
 # port = 8080
 #
