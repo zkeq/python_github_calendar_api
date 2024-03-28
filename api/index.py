@@ -4,12 +4,18 @@ import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
+
 def list_split(items, n):
     return [items[i:i + n] for i in range(0, len(items), n)]
+
 
 def getdata(name):
     try:
         gitpage = requests.get("https://github.com/" + name)
+        if gitpage.status_code != 200:
+            print(f"Failed to get data: {gitpage.status_code}")
+            return None
+
         data = gitpage.text
         datadatereg = re.compile(r'data-date="(.*?)"')
         datadate = datadatereg.findall(data)
@@ -50,7 +56,6 @@ def getdata(name):
         return None
 
 
-
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
@@ -72,9 +77,10 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f"Server error: {e}".encode('utf-8'))
 
+
 # # 设置服务器的端口号
 # port = 8080
-
+#
 # # 创建并启动服务器
 # httpd = HTTPServer(('localhost', port), handler)
 # print(f"Server running on port {port}...")
